@@ -59,6 +59,7 @@ const BugSchema = new mongoose.Schema({
     },
     lastUpdatedAt: {
       type: Date,
+      default: Date.now,
     },
 });
 const BugModel = mongoose.model("Bug", BugSchema);
@@ -72,7 +73,7 @@ function validateBug(obj) {
     priority: Joi.string().valid("Low", "Medium", "High").required(),
     severity: Joi.string().valid("Low", "Medium", "High").required(),
     creator: Joi.string().required(), // Assuming creator is the user's ID
-    timeCreated:Joi.date().required(),
+    timeCreated:Joi.date(),
     project: Joi.string().required(), // Assuming project is the project's ID
     category: Joi.string().required(), // Assuming category is the category's ID
     lastUpdatedBy: Joi.string(), // Optional field
