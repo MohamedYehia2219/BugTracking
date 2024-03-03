@@ -9,16 +9,17 @@ authRouter.post("/signup", async (req, res) => {
     const userData = req.body;
     const { error } = validateRegisterUser(userData);
     if (error)
-        return res.status(400).json({ message: error.details[0].message });
+        return res.status(400).json({ message: error.details[0].message, status:false });
     const hashedPassword = await bcrypt.hash(userData.password, 12);
     try {
         let newUser = new UserModel(userData);
         newUser.password = hashedPassword;
         await newUser.save();
-        res.status(201).json(newUser);
+        let token = jwt.sign({userId: newUser._id}, JWT_SECRET_KEY)
+        res.status(201).json({data:newUser, token:token, status:true});
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message, status:false });
     }
 });
 
@@ -30,25 +31,25 @@ authRouter.post("/login",async(req,res)=>{
         if(userName){existedUser = await UserModel.findOne({userName})};
         //not registered
         if(!existedUser)
-            return res.status(400).json({massage:"Invalid email or userName, This user isnot registered!!"})
+            return res.status(400).json({massage:"Invalid email or userName, This user isnot registered!!", status:false})
         let confirmationPassword = await bcrypt.compare(password,existedUser.password)
         if(!confirmationPassword)
-            return res.status(400).json({massage:"Invalid password!!"})
+            return res.status(400).json({massage:"Invalid password!!", status:false})
         let token = jwt.sign({userId: existedUser._id}, JWT_SECRET_KEY)
-        return res.status(200).json({"token":token})
+        return res.status(200).json({ data:existedUser ,token:token, status:true})
     }catch(error){
         console.log(error);
-        res.status(400).json({ message: error.message });
+        res.status(400).json({ message: error.message, status:false });
     }
 })
 module.exports={authRouter}
 
 
-// const isAuthantecated=require("../middlewares/auth")
-//authRouter.post("/test", isAuthantecated,async (req,res)=>{
-//     //res.json({mass:"success"})
-//     console.log(req.userId)
-//     let user = await UserModel.findOne({_id:req.userId})
-//     res.json(user)
-// })
+const isAuthantecated=require("../middlewares/auth")
+authRouter.post("/test", isAuthantecated,async (req,res)=>{
+    //res.json({mass:"success"})
+    console.log(req.userId)
+    let user = await UserModel.findOne({_id:req.userId})
+    res.json(user)
+})
 
