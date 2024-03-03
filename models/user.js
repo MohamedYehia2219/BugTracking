@@ -27,7 +27,6 @@ const UserSchema=new mongoose.Schema({
         type:String,
         required:true,
         trim:true,
-        minlength:6,
     },
     role:{
         type:String,
@@ -46,15 +45,14 @@ const UserSchema=new mongoose.Schema({
 });
 const UserModel=mongoose.model("User",UserSchema);
 
-
 //validate resgister user
 function validateRegisterUser(obj){
     const schema =Joi.object({
         password:Joi.string().trim().min(6).required(),
-     
     })
     return schema.validate(obj);
 }
+
 //validate update user
 function validateUpdateUser(obj){
     const schema =Joi.object({
@@ -71,4 +69,5 @@ function validateUpdateUser(obj){
 module.exports={
     UserModel,
     validateUpdateUser,
+    validateRegisterUser
 }
