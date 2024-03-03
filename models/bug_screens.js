@@ -9,7 +9,7 @@ const BugScreensSchema = new mongoose.Schema({
     screen:{
       type: String,
     },
-  });
+});
 const BugScreensModel = mongoose.model("BugScreens", BugScreensSchema);
 
 // Validate bug screens
