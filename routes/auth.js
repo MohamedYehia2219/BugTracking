@@ -4,7 +4,6 @@ const {UserModel,validateRegisterUser}= require("../models/user")
 const bcrypt =require("bcrypt")
 const jwt=require("jsonwebtoken")
 const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY
-
 authRouter.post("/signup", async (req, res) => {
     const userData = req.body;
 
