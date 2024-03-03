@@ -48,7 +48,12 @@ const UserModel=mongoose.model("User",UserSchema);
 //validate resgister user
 function validateRegisterUser(obj){
     const schema =Joi.object({
+        name: Joi.string().trim().required().min(2).max(100),
+        userName:Joi.string().trim().required().min(2).max(100),
+        email:Joi.string().trim().required().email(),
         password:Joi.string().trim().min(6).required(),
+        phone:Joi.string().trim().required().min(11).max(11),
+        role:Joi.string().trim().required()
     })
     return schema.validate(obj);
 }
