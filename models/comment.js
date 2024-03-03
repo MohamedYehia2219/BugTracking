@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const Joi = require("joi");
+const {mongoose, Joi} = require("../configration/utils")
 
 const commentSchema = new mongoose.Schema({
     content: {

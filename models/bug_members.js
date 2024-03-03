@@ -1,5 +1,4 @@
-const mongoose = require("mongoose");
-const Joi = require("joi");
+const {mongoose, Joi} = require("../configration/utils")
 
 const BugMembersSchema = new mongoose.Schema({
     userId: {
