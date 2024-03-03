@@ -1,7 +1,9 @@
 const express = require("express");
 const userRouter = express.Router();
 const { UserModel,validateUpdateUser } = require("../models/user");
-const bcrypt =require("bcrypt")
+const isAuthantecated=require("../middlewares/auth");
+const {UserMembersModel} = require("../models/user_members");
+const bcrypt =require("bcrypt");
 
 userRouter.put("/:id", async(req,res)=>{
     let currentUser= await UserModel.findOne({_id: req.params.id});
@@ -33,14 +35,32 @@ userRouter.put("/:id", async(req,res)=>{
     let userUpdatedData = {_id,email,password,userName,name,role,phone,avatar};
     await UserModel.findOneAndUpdate({_id:req.params.id },userUpdatedData)
     .then(()=>{return res.status(200).json({ message: "User updated successfully..", status:true })})
-    .catch((error)=>{return res.status(400).json({ message: error, status:false })})    
+    .catch((error)=>{return res.status(400).json({ message: error.message, status:false })})    
 })
 
 userRouter.delete("/:id", async(req,res)=>{
     await UserModel.findOneAndDelete({_id: req.params.id})
     .then(()=>{return res.status(200).json({ message: "User deleted successfully..", status:true })})
-    .catch((error)=>{return res.status(400).json({ message: error, status:false })}) 
+    .catch((error)=>{return res.status(400).json({ message: error.message, status:false })}) 
 })
+
+//addmember
+userRouter.post("/", isAuthantecated, async(req,res)=>{
+    const {userName, email} = req.body;
+    try{
+        let member;
+        if(userName){member = await UserModel.findOne({userName});}
+        if(email){member = await UserModel.findOne({email});}
+        if(!member){return res.status(400).json({ message: "User is not found !!", status:false })}
+        let data = {userId: req.userId, memberId: member._id};
+        let row = new UserMembersModel(data);
+        await row.save();
+        return res.status(200).json({ data: member, status:true });
+    }catch(error){return res.status(400).json({ message: error.message, status:false })} 
+})
+
+
+
 
 
 module.exports={userRouter}
