@@ -51,7 +51,6 @@ const UserModel=mongoose.model("User",UserSchema);
 function validateRegisterUser(obj){
     const schema =Joi.object({
         password:Joi.string().trim().min(6).required(),
-     
     })
     return schema.validate(obj);
 }
@@ -71,4 +70,5 @@ function validateUpdateUser(obj){
 module.exports={
     UserModel,
     validateUpdateUser,
+    validateRegisterUser
 }
