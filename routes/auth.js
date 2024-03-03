@@ -45,11 +45,11 @@ authRouter.post("/login",async(req,res)=>{
 module.exports={authRouter}
 
 
-const isAuthantecated=require("../middlewares/auth")
-authRouter.post("/test", isAuthantecated,async (req,res)=>{
-    //res.json({mass:"success"})
-    console.log(req.userId)
-    let user = await UserModel.findOne({_id:req.userId})
-    res.json(user)
-})
+// const isAuthantecated=require("../middlewares/auth")
+// authRouter.post("/test", isAuthantecated,async (req,res)=>{
+//     //res.json({mass:"success"})
+//     console.log(req.userId)
+//     let user = await UserModel.findOne({_id:req.userId})
+//     res.json(user)
+// })
 

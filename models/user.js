@@ -66,6 +66,7 @@ function validateUpdateUser(obj){
         userName:Joi.string().trim().min(2).max(100),
         name:Joi.string().trim().min(2).max(100),
         role:Joi.string().trim().min(3),
+        phone:Joi.string().trim().min(11).max(11),
         avatar:Joi.string(),
     })
     return schema.validate(obj);
