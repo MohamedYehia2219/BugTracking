@@ -11,12 +11,12 @@ userRouter.put("/:id", async(req,res)=>{
     if(req.body.email && req.body.email !== currentUser.email)
     {
         let existedEmail = await UserModel.findOne({email: req.body.email})
-        if(existedEmail) {return res.status(400).json({ message: "This email is already existed !! ", status:false })}
+        if(existedEmail) {return res.status(400).json({ message: "This email is already existed !!", status:false })}
     }
     if(req.body.userName && req.body.userName !== currentUser.userName)
     {
         let existedUserName = await UserModel.findOne({userName: req.body.userName})
-        if(existedUserName) {console.log(existedUserName);;return res.status(400).json({ message: "This userName is already existed !! ", status:false })}
+        if(existedUserName) {return res.status(400).json({ message: "This userName is already existed !!", status:false })}
     }
     let hashedPassword;
     if(req.body.password && req.body.password !== currentUser.password)
@@ -36,7 +36,11 @@ userRouter.put("/:id", async(req,res)=>{
     .catch((error)=>{return res.status(400).json({ message: error, status:false })})    
 })
 
-
+userRouter.delete("/:id", async(req,res)=>{
+    await UserModel.findOneAndDelete({_id: req.params.id})
+    .then(()=>{return res.status(200).json({ message: "User deleted successfully..", status:true })})
+    .catch((error)=>{return res.status(400).json({ message: error, status:false })}) 
+})
 
 
 module.exports={userRouter}
