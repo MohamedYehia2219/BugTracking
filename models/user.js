@@ -8,7 +8,7 @@ const UserSchema=new mongoose.Schema({
         unique:true,
         match:/.+@.+\..+/
     },
-    username:{
+    userName:{
         type:String,
         required:true,
         trim:true,
@@ -51,7 +51,7 @@ function validateUpdateUser(obj){
     const schema =Joi.object({
         email:Joi.string().trim().email(),
         password:Joi.string().trim().min(6),
-        username:Joi.string().trim().min(2).max(100),
+        userName:Joi.string().trim().min(2).max(100),
         name:Joi.string().trim().min(2).max(100),
         role:Joi.string().trim().min(3),
         avatar:Joi.string(),
