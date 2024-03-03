@@ -4,17 +4,13 @@ const {UserModel,validateRegisterUser}= require("../models/user")
 const bcrypt =require("bcrypt")
 const jwt=require("jsonwebtoken")
 const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY
+
 authRouter.post("/signup", async (req, res) => {
     const userData = req.body;
-
-    // Validate user data before creating a new user
     const { error } = validateRegisterUser(userData);
-    if (error) {
+    if (error)
         return res.status(400).json({ message: error.details[0].message });
-    }
-
     const hashedPassword = await bcrypt.hash(userData.password, 12);
-
     try {
         let newUser = new UserModel(userData);
         newUser.password = hashedPassword;
