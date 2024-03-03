@@ -24,5 +24,5 @@ function validateBugScreens(obj) {
 
 module.exports = {
     BugScreensModel,
-  validateBugScreens,
+    validateBugScreens,
 };
