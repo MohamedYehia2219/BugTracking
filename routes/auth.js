@@ -31,9 +31,9 @@ authRouter.post("/login",async(req,res)=>{
     let token = jwt.sign({userId: existedUser._id.toString()}, JWT_SECRET_KEY)
     return res.status(200).json({"token":token})
 })
+module.exports={authRouter}
 
 // authRouter.post("/test", isAuthantecated, (req,res)=>{
 //     res.json({mass:"success"})
 //     console.log(req.userId)
 // })
-module.exports={authRouter}
