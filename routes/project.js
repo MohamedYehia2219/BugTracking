@@ -36,10 +36,8 @@ projectRouter.post("/",isAuthantecated, async(req,res)=>{
 
 //get user projects  
 projectRouter.get("/", isAuthantecated, async (req,res)=>{
-    let userId =req.userId;
     try{
-        let projects = await ProjectMembersModel.find({userId: req.params.id}).populate("projectId");
-        console.log(projects);
+        let projects = await ProjectMembersModel.find({userId: req.userId}).populate("projectId");
         if(projects)
         {
             let projectsList = [];
@@ -51,6 +49,37 @@ projectRouter.get("/", isAuthantecated, async (req,res)=>{
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
 }) 
 
+//update project
+projectRouter.put("/:id", isAuthantecated,async (req,res)=>{
+    try{
+        const {error} = validateProjectUpdated(req.body);
+        if(error) {return res.status(400).json({ message: error.details[0].message, status:false });}
+        let theProject =await ProjectModel.findOne({_id:req.params.id});
+        let title = req.body.title ?? theProject.title;
+        let description =req.body.description ?? theProject.description;
+        let status= req.body.status ?? theProject.status;
+        let creator=theProject.creator;
+        let timeCreated = theProject.timeCreated;
+        let lastUpdatedBy= req.userId;
+        let lastUpdatedAt=Date.now();
+        let updatedProjectData={title,description,status,creator,timeCreated,lastUpdatedBy,lastUpdatedAt};
+        await ProjectModel.findOneAndUpdate({_id:req.params.id},updatedProjectData)
+        return res.status(200).json({ message:"Project updated successfully.." , status:true });
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+})
+
+//delete project
+projectRouter.delete("/:id", async(req,res)=>{
+    try{
+        let project= await ProjectModel.findOne({_id: req.params.id});
+        if(project)
+        {
+            await ProjectModel.findByIdAndDelete(req.params.id);
+            return res.status(200).json({ message: "Project deleted successfully..", status:true })
+        }
+        else{return res.status(400).json({ message: "Project isn't found !!", status:false })}
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+})
 
 
 module.exports={projectRouter}
