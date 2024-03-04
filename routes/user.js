@@ -74,14 +74,11 @@ userRouter.get("/:id", async(req,res)=>{
             let members = await UserMembersModel.find({userId: req.params.id}).populate("memberId");
             if(members)
             {
-                let membersArray = [];
+                let membersList = [];
                 for(let i=0; i<members.length; i++)
-                {
-                    membersArray.push(members[i].memberId);
-                }
-                user.members=membersArray;
+                    membersList.push(members[i].memberId);
+                return res.status(200).json({ data: {user,membersList} , status:true });
             }
-            return res.status(200).json({ data: user , status:true });
         }
         else{return res.status(400).json({ message: "User isn't found !!", status:false })}       
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
