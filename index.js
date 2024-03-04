@@ -16,5 +16,7 @@ connectToDB();
 //routes
 const {authRouter} = require("./routes/auth")
 const {userRouter} = require("./routes/user")
+const {projectRouter} = require("./routes/project")
 app.use("/auth",authRouter);
 app.use("/users", userRouter);
+app.use("/projects",projectRouter);

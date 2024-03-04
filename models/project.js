@@ -7,12 +7,14 @@ const ProjectSchema = new mongoose.Schema({
       trim: true,
       minlength: 2,
       maxlength: 200,
+      unique:true,
     },
     description: {
       type: String,
       trim: true,
       minlength: 5,
       maxlength: 1000,
+      required: true,
     },
     status: {
       type: String,
@@ -39,21 +41,29 @@ const ProjectSchema = new mongoose.Schema({
   });
 const ProjectModel = mongoose.model("Project", ProjectSchema);
 
-// Validate project
-function validateProject(obj) {
+// Validate project craetion
+function validateProjectCreation(obj) {
   const schema = Joi.object({
     title: Joi.string().trim().min(2).max(200).required(),
-    description: Joi.string().trim().min(5).max(1000),
+    description: Joi.string().trim().min(5).max(1000).required(),
     status: Joi.string().valid("Open", "In_Progress","Closed").required(),
-    creator: Joi.string().required(), // Assuming creator is the user's ID
-    timeCreated:Joi.date(),
-    lastUpdatedBy: Joi.string(), // Optional field
-    lastUpdatedAt: Joi.date(), // Optional field
+    members:Joi.array().required()
+  });
+  return schema.validate(obj);
+}
+
+//validate project updated
+function validateProjectUpdated(obj) {
+  const schema = Joi.object({
+    title: Joi.string().trim().min(2).max(200),
+    description: Joi.string().trim().min(5).max(1000),
+    status: Joi.string().valid("Open", "In_Progress","Closed")
   });
   return schema.validate(obj);
 }
 
 module.exports = {
     ProjectModel,
-    validateProject,
+    validateProjectCreation,
+    validateProjectUpdated
 };
