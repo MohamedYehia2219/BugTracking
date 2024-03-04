@@ -55,29 +55,35 @@ userRouter.post("/", isAuthantecated, async(req,res)=>{
 
 userRouter.delete("/:id", async(req,res)=>{
     try{
-        let user = await UserModel.findById(req.params.id);
-        console.log(user);
-        if(user)
+        let currentUser= await UserModel.findOne({_id: req.params.id});
+        if(currentUser)
         {
-            //await UserModel.findByIdAndDelete(req.params.id);
+            await UserModel.findByIdAndDelete(req.params.id);
             return res.status(200).json({ message: "User deleted successfully..", status:true })
         }
         else{return res.status(400).json({ message: "User isn't found !!", status:false })}
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
-    // await UserModel.findOneAndDelete({_id: req.params.id})
-    // .then(()=>{return res.status(200).json({ message: "User deleted successfully..", status:true })})
-    // .catch((error)=>{return res.status(400).json({ message: error.message, status:false })}) 
 })
 
 //get user with members
 userRouter.get("/:id", async(req,res)=>{
     try{
         let user = await UserModel.findOne({_id: req.params.id});
-        console.log(user);
         if(user)
-            return res.status(200).json({ data: user , status:true })
-        else
-            return res.status(400).json({ message: "User isn't found !!", status:false })
+        {
+            let members = await UserMembersModel.find({userId: req.params.id}).populate("memberId");
+            if(members)
+            {
+                let membersArray = [];
+                for(let i=0; i<members.length; i++)
+                {
+                    membersArray.push(members[i].memberId);
+                }
+                user.members=membersArray;
+            }
+            return res.status(200).json({ data: user , status:true });
+        }
+        else{return res.status(400).json({ message: "User isn't found !!", status:false })}       
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
 })
 
