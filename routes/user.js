@@ -69,4 +69,16 @@ userRouter.delete("/:id", async(req,res)=>{
     // .catch((error)=>{return res.status(400).json({ message: error.message, status:false })}) 
 })
 
+//get user with members
+userRouter.get("/:id", async(req,res)=>{
+    try{
+        let user = await UserModel.findOne({_id: req.params.id});
+        console.log(user);
+        if(user)
+            return res.status(200).json({ data: user , status:true })
+        else
+            return res.status(400).json({ message: "User isn't found !!", status:false })
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+})
+
 module.exports={userRouter}
