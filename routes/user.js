@@ -38,12 +38,6 @@ userRouter.put("/:id", async(req,res)=>{
     .catch((error)=>{return res.status(400).json({ message: error.message, status:false })})    
 })
 
-userRouter.delete("/:id", async(req,res)=>{
-    await UserModel.findOneAndDelete({_id: req.params.id})
-    .then(()=>{return res.status(200).json({ message: "User deleted successfully..", status:true })})
-    .catch((error)=>{return res.status(400).json({ message: error.message, status:false })}) 
-})
-
 //addmember
 userRouter.post("/", isAuthantecated, async(req,res)=>{
     const {userName, email} = req.body;
@@ -59,8 +53,20 @@ userRouter.post("/", isAuthantecated, async(req,res)=>{
     }catch(error){return res.status(400).json({ message: error.message, status:false })} 
 })
 
-
-
-
+userRouter.delete("/:id", async(req,res)=>{
+    try{
+        let user = await UserModel.findById(req.params.id);
+        console.log(user);
+        if(user)
+        {
+            //await UserModel.findByIdAndDelete(req.params.id);
+            return res.status(200).json({ message: "User deleted successfully..", status:true })
+        }
+        else{return res.status(400).json({ message: "User isn't found !!", status:false })}
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+    // await UserModel.findOneAndDelete({_id: req.params.id})
+    // .then(()=>{return res.status(200).json({ message: "User deleted successfully..", status:true })})
+    // .catch((error)=>{return res.status(400).json({ message: error.message, status:false })}) 
+})
 
 module.exports={userRouter}
