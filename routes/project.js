@@ -30,7 +30,8 @@ projectRouter.post("/",isAuthantecated, async(req,res)=>{
                 await newProjectMember.save();
             }
         }
-        return res.status(200).json({ message:"Project created successfully..", data: newProject, status:true });
+        await newProject.populate(["creator","lastUpdatedBy"]);
+        return res.status(200).json({data: newProject, status:true });
     }catch(error){return res.status(400).json({ message: error.message, status:false })} 
 })
 
@@ -42,7 +43,10 @@ projectRouter.get("/", isAuthantecated, async (req,res)=>{
         {
             let projectsList = [];
             for(let i=0; i<projects.length; i++)
+            {
+                await projects[i].projectId.populate(["creator","lastUpdatedBy"]);
                 projectsList.push(projects[i].projectId);
+            }
             return res.status(200).json({ data: projectsList , status:true });
         }
         else{return res.status(400).json({ message: "No projects yet !!", status:false })}       
@@ -80,6 +84,5 @@ projectRouter.delete("/:id", async(req,res)=>{
         else{return res.status(400).json({ message: "Project isn't found !!", status:false })}
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
 })
-
 
 module.exports={projectRouter}
