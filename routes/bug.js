@@ -1,12 +1,11 @@
 const express = require("express");
 const bugRouter = express.Router();
-const { UserModel} = require("../models/user");
 const isAuthantecated=require("../middlewares/auth");
 const {BugModel,validateBugCreation,validateBugUpdating} = require("../models/bug");
 const {BugMembersModel} = require("../models/bug_members");
 const {BugScreensModel} = require("../models/bug_screens");
 
-//add project
+//add Bug
 bugRouter.post("/",isAuthantecated, async(req,res)=>{
     try{
         //add bug model
@@ -52,22 +51,38 @@ bugRouter.get("/", isAuthantecated, async (req,res)=>{
 //update bug
 bugRouter.put("/:id", isAuthantecated,async (req,res)=>{
     try{
-        const {error} = validateProjectUpdated(req.body);
+        const {error} = validateBugUpdating(req.body);
         if(error) {return res.status(400).json({ message: error.details[0].message, status:false });}
-        let theProject =await ProjectModel.findOne({_id:req.params.id});
-        let title = req.body.title ?? theProject.title;
-        let description =req.body.description ?? theProject.description;
-        let status= req.body.status ?? theProject.status;
-        let creator=theProject.creator;
-        let timeCreated = theProject.timeCreated;
+        let theBug =await BugModel.findOne({_id:req.params.id});
+        let title = req.body.title ?? theBug.title;
+        let description =req.body.description ?? theBug.description;
+        let status= req.body.status ?? theBug.status;
+        let priority =req.body.priority ?? theBug.priority;
+        let severity = req.body.severity ?? theBug.severity;
+        let category = req.body.category ?? theBug.category;
+        let project =theBug.project;
+        let creator=theBug.creator;
+        let timeCreated = theBug.timeCreated;
         let lastUpdatedBy= req.userId;
         let lastUpdatedAt=Date.now();
-        let updatedProjectData={title,description,status,creator,timeCreated,lastUpdatedBy,lastUpdatedAt};
-        await ProjectModel.findOneAndUpdate({_id:req.params.id},updatedProjectData)
-        return res.status(200).json({ message:"Project updated successfully.." , status:true });
+        let updatedBugData={title,description,status,priority,severity,category,project,creator,timeCreated,lastUpdatedBy,lastUpdatedAt};
+        await BugModel.findOneAndUpdate({_id:req.params.id},updatedBugData)
+        return res.status(200).json({ message:"Bug updated successfully.." , status:true });
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
 })
 
+//delete bug
+bugRouter.delete("/:id", async(req,res)=>{
+    try{
+        let bug = await BugModel.findOne({_id: req.params.id});
+        if(bug)
+        {
+            await BugModel.findByIdAndDelete(req.params.id);
+            return res.status(200).json({ message: "Bug deleted successfully..", status:true })
+        }
+        else{return res.status(400).json({ message: "Bug isn't found !!", status:false })}
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+})
 
 
 
