@@ -18,20 +18,20 @@ const BugSchema = new mongoose.Schema({
     status: {
       type: String,
       required: true,
-      enum: ["To_Do", "Done", "In_Progress"],
-      default: "To_Do",
+      enum: ["To Do", "Done", "In Progress"],
+      default: "To Do",
     },
     priority: {
       type: String,
       required: true,
-      enum: ["Low", "Medium", "High"],
-      default: "Medium",
+      enum: ["Low Priority", "Medium Priority", "High Priority"],
+      default: "Medium Priority",
     },
     severity: {
       type: String,
       required: true,
-      enum: ["Low", "Medium", "High"],
-      default: "Medium",
+      enum: ["Low Severity", "Medium Severity", "High Severity"],
+      default: "Medium Severity",
     },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
@@ -68,9 +68,9 @@ function validateBugCreation(obj) {
   const schema = Joi.object({
     title: Joi.string().trim().min(2).max(200).required(),
     description: Joi.string().trim().min(5).max(1000).required(),
-    status: Joi.string().valid("To_Do", "Done", "In_Progress").required(),
-    priority: Joi.string().valid("Low", "Medium", "High").required(),
-    severity: Joi.string().valid("Low", "Medium", "High").required(),
+    status: Joi.string().valid("To Do", "Done", "In Progress").required(),
+    priority: Joi.string().valid("Low Priority", "Medium Priority", "High Priority").required(),
+    severity: Joi.string().valid("Low Severity", "Medium Severity", "High Severity").required(),
     project: Joi.string().required(), // Assuming project is the project's ID
     category: Joi.string().required(), // Assuming category is the category's ID
     members:Joi.array().required(),
@@ -83,9 +83,9 @@ function validateBugUpdating(obj) {
   const schema = Joi.object({
     title: Joi.string().trim().min(2).max(200),
     description: Joi.string().trim().min(5).max(1000),
-    status: Joi.string().valid("To_Do", "Done", "In_Progress"),
-    priority: Joi.string().valid("Low", "Medium", "High"),
-    severity: Joi.string().valid("Low", "Medium", "High"),
+    status: Joi.string().valid("To Do", "Done", "In Progress"),
+    priority: Joi.string().valid("Low Priority", "Medium Priority", "High Priority"),
+    severity: Joi.string().valid("Low Severity", "Medium Severity", "High Severity"),
     category: Joi.string(), // Assuming category is the category's ID
   });
   return schema.validate(obj);

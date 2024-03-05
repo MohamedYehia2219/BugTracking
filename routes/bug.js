@@ -49,7 +49,24 @@ bugRouter.get("/", isAuthantecated, async (req,res)=>{
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
 }) 
 
-
+//update bug
+bugRouter.put("/:id", isAuthantecated,async (req,res)=>{
+    try{
+        const {error} = validateProjectUpdated(req.body);
+        if(error) {return res.status(400).json({ message: error.details[0].message, status:false });}
+        let theProject =await ProjectModel.findOne({_id:req.params.id});
+        let title = req.body.title ?? theProject.title;
+        let description =req.body.description ?? theProject.description;
+        let status= req.body.status ?? theProject.status;
+        let creator=theProject.creator;
+        let timeCreated = theProject.timeCreated;
+        let lastUpdatedBy= req.userId;
+        let lastUpdatedAt=Date.now();
+        let updatedProjectData={title,description,status,creator,timeCreated,lastUpdatedBy,lastUpdatedAt};
+        await ProjectModel.findOneAndUpdate({_id:req.params.id},updatedProjectData)
+        return res.status(200).json({ message:"Project updated successfully.." , status:true });
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+})
 
 
 
