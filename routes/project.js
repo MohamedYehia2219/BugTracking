@@ -4,6 +4,7 @@ const isAuthantecated=require("../middlewares/auth");
 const {ProjectModel,validateProjectCreation, validateProjectUpdated} = require("../models/project");
 const {ProjectMembersModel}= require("../models/project_members")
 const { UserModel} = require("../models/user");
+const {BugModel} = require("../models/bug");
 
 //add project
 projectRouter.post("/",isAuthantecated, async(req,res)=>{
@@ -80,6 +81,30 @@ projectRouter.delete("/:id", async(req,res)=>{
         {
             await ProjectModel.findByIdAndDelete(req.params.id);
             return res.status(200).json({ message: "Project deleted successfully..", status:true })
+        }
+        else{return res.status(400).json({ message: "Project isn't found !!", status:false })}
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+})
+
+//get project details
+projectRouter.get("/:id", async (req,res)=>{
+    try{
+        let project= await ProjectModel.findOne({_id: req.params.id});
+        if(project)
+        {   
+            //project data
+            await project.populate(["creator","lastUpdatedBy"]);
+            //bugs in project
+            let bugs = await BugModel.find({project: req.params.id}).populate(["creator","lastUpdatedBy"]);
+            // members in project
+            let members = await ProjectMembersModel.find({projectId: req.params.id}).populate("userId");
+            if(members)
+            {
+                let membersList = [];
+                for(let i=0; i<members.length; i++)
+                    membersList.push(members[i].userId);
+            }
+            return res.status(200).json({ data: {project, bugs, membersList} , status:true });
         }
         else{return res.status(400).json({ message: "Project isn't found !!", status:false })}
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
