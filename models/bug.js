@@ -63,25 +63,36 @@ const BugSchema = new mongoose.Schema({
 });
 const BugModel = mongoose.model("Bug", BugSchema);
 
-// Validate bug
-function validateBug(obj) {
+// Validate bug creation
+function validateBugCreation(obj) {
   const schema = Joi.object({
     title: Joi.string().trim().min(2).max(200).required(),
     description: Joi.string().trim().min(5).max(1000).required(),
     status: Joi.string().valid("To_Do", "Done", "In_Progress").required(),
     priority: Joi.string().valid("Low", "Medium", "High").required(),
     severity: Joi.string().valid("Low", "Medium", "High").required(),
-    creator: Joi.string().required(), // Assuming creator is the user's ID
-    timeCreated:Joi.date(),
     project: Joi.string().required(), // Assuming project is the project's ID
     category: Joi.string().required(), // Assuming category is the category's ID
-    lastUpdatedBy: Joi.string(), // Optional field
-    lastUpdatedAt: Joi.date(), // Optional field
+    members:Joi.array().required(),
+  });
+  return schema.validate(obj);
+}
+
+// Validate bug updating
+function validateBugUpdating(obj) {
+  const schema = Joi.object({
+    title: Joi.string().trim().min(2).max(200),
+    description: Joi.string().trim().min(5).max(1000),
+    status: Joi.string().valid("To_Do", "Done", "In_Progress"),
+    priority: Joi.string().valid("Low", "Medium", "High"),
+    severity: Joi.string().valid("Low", "Medium", "High"),
+    category: Joi.string(), // Assuming category is the category's ID
   });
   return schema.validate(obj);
 }
 
 module.exports = {
     BugModel,
-    validateBug,
+    validateBugCreation,
+    validateBugUpdating
 };
