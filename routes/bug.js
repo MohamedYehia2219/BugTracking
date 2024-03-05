@@ -31,6 +31,23 @@ bugRouter.post("/",isAuthantecated, async(req,res)=>{
     }catch(error){return res.status(400).json({ message: error.message, status:false })} 
 })
 
+//get user's bugs  
+bugRouter.get("/", isAuthantecated, async (req,res)=>{
+    try{
+        let bugs = await BugMembersModel.find({userId: req.userId}).populate("bugId");
+        if(bugs)
+        {
+            let bugsList = [];
+            for(let i=0; i<bugs.length; i++)
+            {
+                await bugs[i].bugId.populate(["creator","lastUpdatedBy"]);
+                bugsList.push(bugs[i].bugId);
+            }
+            return res.status(200).json({ data: bugsList , status:true });
+        }
+        else{return res.status(400).json({ message: "No Bugs Yet !!", status:false })}       
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+}) 
 
 
 
