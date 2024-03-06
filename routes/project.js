@@ -39,14 +39,18 @@ projectRouter.post("/",isAuthantecated, async(req,res)=>{
 //get user projects  
 projectRouter.get("/", isAuthantecated, async (req,res)=>{
     try{
-        let projects = await ProjectMembersModel.find({userId: req.userId});
+        let projects = await ProjectMembersModel.find({userId: req.userId}).populate("projectId");
+        console.log(projects);
         if(projects)
         {
             let projectsList = [];
             for(let i=0; i<projects.length; i++)
             {
-                await projects[i].projectId.populate(["creator","lastUpdatedBy"]);
-                projectsList.push(projects[i].projectId);
+                if(projects[i].projectId)
+                {
+                    await projects[i].projectId.populate(["creator","lastUpdatedBy"]);
+                    projectsList.push(projects[i].projectId);
+                }
             }
             return res.status(200).json({ data: projectsList , status:true });
         }
