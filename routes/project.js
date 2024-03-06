@@ -39,7 +39,7 @@ projectRouter.post("/",isAuthantecated, async(req,res)=>{
 //get user projects  
 projectRouter.get("/", isAuthantecated, async (req,res)=>{
     try{
-        let projects = await ProjectMembersModel.find({userId: req.userId}).populate("projectId");
+        let projects = await ProjectMembersModel.find({userId: req.userId});
         if(projects)
         {
             let projectsList = [];
