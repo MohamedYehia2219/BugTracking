@@ -46,6 +46,7 @@ userRouter.post("/", isAuthantecated, async(req,res)=>{
         if(userName){member = await UserModel.findOne({userName});}
         if(email){member = await UserModel.findOne({email});}
         if(!member){return res.status(400).json({ message: "User is not found !!", status:false })}
+        if(member._id == req.userId){return res.status(400).json({ message: "Something wrong !!", status:false })}
         let data = {userId: req.userId, memberId: member._id};
         let row = new UserMembersModel(data);
         await row.save();
