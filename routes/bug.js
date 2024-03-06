@@ -25,7 +25,7 @@ bugRouter.post("/",isAuthantecated, async(req,res)=>{
             await newBugMember.save();   
         }
         // add bug screens{****************}
-        await newBug.populate(["creator","lastUpdatedBy"]);
+        await newBug.populate(["creator","lastUpdatedBy","category"]);
         return res.status(200).json({data: newBug, status:true });
     }catch(error){return res.status(400).json({ message: error.message, status:false })} 
 })
@@ -39,7 +39,7 @@ bugRouter.get("/", isAuthantecated, async (req,res)=>{
             let bugsList = [];
             for(let i=0; i<bugs.length; i++)
             {
-                await bugs[i].bugId.populate(["creator","lastUpdatedBy"]);
+                await bugs[i].bugId.populate(["creator","lastUpdatedBy","category"]);
                 bugsList.push(bugs[i].bugId);
             }
             return res.status(200).json({ data: bugsList , status:true });
@@ -84,8 +84,28 @@ bugRouter.delete("/:id", async(req,res)=>{
     }catch(error){return res.status(400).json({ message: error.message, status:false })}
 })
 
-
-
-
+//get bug details
+bugRouter.get("/:id", async (req,res)=>{
+    try{
+        let bug = await BugModel.findOne({_id: req.params.id});
+        if(bug)
+        {   
+            //Bug data
+            await bug.populate(["creator","lastUpdatedBy","category"]);
+            //bugs screens{****************************}
+            
+            // members in the bug
+            let members = await BugMembersModel.find({bugId: req.params.id}).populate("userId");
+            let membersList = [];
+            if(members)
+            {
+                for(let i=0; i<members.length; i++)
+                    membersList.push(members[i].userId);
+            }
+            return res.status(200).json({ data: {bug, membersList} , status:true });
+        }
+        else{return res.status(400).json({ message: "Bug isn't found !!", status:false })}
+    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+})
 
 module.exports={bugRouter}

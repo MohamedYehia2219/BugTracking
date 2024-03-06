@@ -95,7 +95,7 @@ projectRouter.get("/:id", async (req,res)=>{
             //project data
             await project.populate(["creator","lastUpdatedBy"]);
             //bugs in project
-            let bugs = await BugModel.find({project: req.params.id}).populate(["creator","lastUpdatedBy"]);
+            let bugs = await BugModel.find({project: req.params.id}).populate(["creator","lastUpdatedBy","category"]);
             // members in project
             let members = await ProjectMembersModel.find({projectId: req.params.id}).populate("userId");
             let membersList = [];
