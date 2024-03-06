@@ -18,7 +18,9 @@ const {authRouter} = require("./routes/auth")
 const {userRouter} = require("./routes/user")
 const {projectRouter} = require("./routes/project")
 const {bugRouter} = require("./routes/bug")
+const {categoryRouter} = require("./routes/category")
 app.use("/auth",authRouter);
 app.use("/users", userRouter);
 app.use("/projects",projectRouter);
 app.use("/bugs", bugRouter);
+app.use("/categories",categoryRouter);

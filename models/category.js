@@ -14,7 +14,7 @@ const CategoryModel = mongoose.model("Category", categorySchema);
 // Validate category
 function validateCategory(obj) {
   const schema = Joi.object({
-    title: Joi.string().trim().min(2).max(200).required(),
+    categories: Joi.array().required(),
   });
   return schema.validate(obj);
 }
