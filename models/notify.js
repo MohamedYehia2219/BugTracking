@@ -23,7 +23,4 @@ const NotifySchema = new mongoose.Schema({
     },
 });
 const NotifyModel = mongoose.model("Notify", NotifySchema);  
-module.exports = {
-    NotifyModel,
-    validateNotify,
-  };
+module.exports = {NotifyModel};
