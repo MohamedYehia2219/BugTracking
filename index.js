@@ -1,6 +1,5 @@
 require('dotenv').config();
 const express = require("express");
-const multer = require("multer");
 const path = require("path");
 const app = express();
 
@@ -15,11 +14,6 @@ app.listen(PORT, () =>
 const connectToDB= require("./configration/db");
 connectToDB();
 
-
-//static folder
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-
 //routes
 const {authRouter} = require("./routes/auth")
 const {userRouter} = require("./routes/user")
@@ -33,3 +27,6 @@ app.use("/projects",projectRouter);
 app.use("/bugs", bugRouter);
 app.use("/categories",categoryRouter);
 app.use("/comments", commentRouter);
+
+//static folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));

@@ -4,9 +4,10 @@ const isAuthantecated=require("../middlewares/auth");
 const {BugModel,validateBugCreation,validateBugUpdating} = require("../models/bug");
 const {BugMembersModel} = require("../models/bug_members");
 const {BugScreensModel} = require("../models/bug_screens");
+const {upload} = require("../configration/utils")
 
 //add Bug
-bugRouter.post("/",isAuthantecated, async(req,res)=>{
+bugRouter.post("/", isAuthantecated, upload.array("bugs"), async(req,res)=>{
     try{
         //add bug model
         const {error} = validateBugCreation(req.body);
@@ -24,7 +25,16 @@ bugRouter.post("/",isAuthantecated, async(req,res)=>{
             newBugMember= new BugMembersModel({userId: members[i], bugId});
             await newBugMember.save();   
         }
-        // add bug screens{****************}
+        // add bug screens
+        console.log(req.files);
+        if (req.files) {
+            req.files.map(async(file)=>{
+                let screen = file.filename;
+                let newBugScreen = new BugScreensModel({bug:bugId, screen});
+                await newBugScreen.save();
+            })
+        }
+        //return bug
         await newBug.populate(["creator","lastUpdatedBy","category"]);
         return res.status(200).json({data: newBug, status:true });
     }catch(error){return res.status(500).json({ message: error.message, status:false })} 
@@ -107,5 +117,4 @@ bugRouter.get("/:id", async (req,res)=>{
         else{return res.status(200).json({ message: "Bug isn't found !!", status:false })}
     }catch(error){return res.status(500).json({ message: error.message, status:false })}
 })
-
 module.exports={bugRouter}

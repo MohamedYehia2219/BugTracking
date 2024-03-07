@@ -26,5 +26,4 @@ categoryRouter.get("/", async(req,res)=>{
         return res.status(200).json({ data: categories , status:true });
     }catch(error){return res.status(500).json({ message: error.message, status:false })} 
 })
-
 module.exports={categoryRouter}

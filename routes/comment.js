@@ -30,5 +30,4 @@ commentRouter.get("/:id", async (req,res)=>{
         return res.status(200).json({ data: comments , status:true });
     }catch(error){return res.status(500).json({ message: error.message, status:false })} 
 })
-
 module.exports={commentRouter}

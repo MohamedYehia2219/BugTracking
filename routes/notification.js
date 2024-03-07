@@ -22,7 +22,7 @@ notificationRouter.post("/",isAuthantecated, async(req,res)=>{
             newNotify = new NotifyModel({senderUserId, receiverUserId:recievers[i], notificationId});
             await newNotify.save();   
         }
-        return res.status(200).json({message: "notification saved successfully..", status:true });
+        return res.status(200).json({message: "Notification saved successfully..", status:true });
     }catch(error){return res.status(500).json({ message: error.message, status:false })} 
 })
 
@@ -35,5 +35,4 @@ notificationRouter.get("/:id", async(req,res)=>{
         return res.status(200).json({data: notifications, status:true });
     }catch(error){return res.status(500).json({ message: error.message, status:false })} 
 })
-
 module.exports={notificationRouter}
