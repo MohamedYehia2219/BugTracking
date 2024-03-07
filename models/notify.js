@@ -19,21 +19,10 @@ const NotifySchema = new mongoose.Schema({
     time: {
         type: Date,
         required: true,
+        default: Date.now()
     },
 });
-const NotifyModel = mongoose.model("Notify", NotifySchema);
-  
-// Validate notify
-function validateNotify(obj) {
-    const schema = Joi.object({
-      senderUserId: Joi.string().required(), // Assuming senderUserId is the sender user's ID
-      receiverUserId: Joi.string().required(), // Assuming receiverUserId is the receiver user's ID
-      notificationId: Joi.string().required(), // Assuming notificationId is the existing notification's ID
-      time: Joi.date().required(),
-    });  
-    return schema.validate(obj);
-}
-  
+const NotifyModel = mongoose.model("Notify", NotifySchema);  
 module.exports = {
     NotifyModel,
     validateNotify,
