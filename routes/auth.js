@@ -5,21 +5,29 @@ const bcrypt =require("bcrypt")
 const jwt=require("jsonwebtoken")
 const JWT_SECRET_KEY= process.env.JWT_SECRET_KEY
 
+
+
+
+
 authRouter.post("/signup", async (req, res) => {
     const userData = req.body;
     const { error } = validateRegisterUser(userData);
     if (error)
-        return res.status(200).json({ message: error.details[0].message, status:false });
+        return res.status(200).json({ message: error.details[0].message, status: false });
+
     const hashedPassword = await bcrypt.hash(userData.password, 12);
+
     try {
         let newUser = new UserModel(userData);
         newUser.password = hashedPassword;
+
+
         await newUser.save();
-        let token = jwt.sign({userId: newUser._id}, JWT_SECRET_KEY)
-        res.status(201).json({data:newUser, token:token, status:true});
+        let token = jwt.sign({ userId: newUser._id }, JWT_SECRET_KEY);
+        res.status(201).json({ data: newUser, token: token, status: true });
     } catch (error) {
         console.log(error);
-        res.status(500).json({ message: error.message, status:false });
+        res.status(500).json({ message: error.message, status: false });
     }
 });
 

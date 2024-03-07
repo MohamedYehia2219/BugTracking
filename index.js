@@ -1,5 +1,7 @@
 require('dotenv').config();
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
 const app = express();
 
 //server listen on port
@@ -12,6 +14,11 @@ app.listen(PORT, () =>
 //mongo connection
 const connectToDB= require("./configration/db");
 connectToDB();
+
+
+//static folder
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 //routes
 const {authRouter} = require("./routes/auth")
