@@ -18,7 +18,7 @@ const ProjectSchema = new mongoose.Schema({
     },
     status: {
       type: String,
-      enum: ["Open", "In Progress","Closed"],
+      enum: ["Open", "Not Started Yet","Closed"],
       default: "Open",
     },
     creator: {
@@ -46,7 +46,7 @@ function validateProjectCreation(obj) {
   const schema = Joi.object({
     title: Joi.string().trim().min(2).max(200).required(),
     description: Joi.string().trim().min(5).max(1000).required(),
-    status: Joi.string().valid("Open", "In Progress","Closed").required(),
+    status: Joi.string().valid("Open", "Not Started Yet","Closed").required(),
     members:Joi.array().required()
   });
   return schema.validate(obj);
@@ -57,7 +57,7 @@ function validateProjectUpdated(obj) {
   const schema = Joi.object({
     title: Joi.string().trim().min(2).max(200),
     description: Joi.string().trim().min(5).max(1000),
-    status: Joi.string().valid("Open", "In Progress","Closed")
+    status: Joi.string().valid("Open", "Not Started Yet","Closed")
   });
   return schema.validate(obj);
 }
