@@ -7,7 +7,7 @@ const {BugScreensModel} = require("../models/bug_screens");
 const {upload} = require("../configration/utils")
 
 //add Bug
-bugRouter.post("/", isAuthantecated, upload.array("bugs"), async(req,res)=>{
+bugRouter.post("/", upload.array("bugs"), isAuthantecated, async(req,res)=>{
     try{
         //add bug model
         const {error} = validateBugCreation(req.body);
@@ -25,7 +25,7 @@ bugRouter.post("/", isAuthantecated, upload.array("bugs"), async(req,res)=>{
             newBugMember= new BugMembersModel({userId: members[i], bugId});
             await newBugMember.save();   
         }
-        // add bug screens
+        // add bug screens*************************************
         console.log(req.files);
         if (req.files) {
             req.files.map(async(file)=>{
@@ -102,8 +102,8 @@ bugRouter.get("/:id", async (req,res)=>{
         {   
             //Bug data
             await bug.populate(["creator","lastUpdatedBy","category"]);
-            //bugs screens{****************************}
-            
+            //bugs screens
+            let bugScreens = await BugScreensModel.find({bug: req.params.id});
             // members in the bug
             let members = await BugMembersModel.find({bugId: req.params.id}).populate("userId");
             let membersList = [];
@@ -112,7 +112,7 @@ bugRouter.get("/:id", async (req,res)=>{
                 for(let i=0; i<members.length; i++)
                     membersList.push(members[i].userId);
             }
-            return res.status(200).json({ data: {bug, membersList} , status:true });
+            return res.status(200).json({ data: {bug, membersList, bugScreens} , status:true });
         }
         else{return res.status(200).json({ message: "Bug isn't found !!", status:false })}
     }catch(error){return res.status(500).json({ message: error.message, status:false })}
