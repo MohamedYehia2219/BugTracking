@@ -10,7 +10,7 @@ bugRouter.post("/",isAuthantecated, async(req,res)=>{
     try{
         //add bug model
         const {error} = validateBugCreation(req.body);
-        if(error) {return res.status(400).json({ message: error.details[0].message, status:false });}
+        if(error) {return res.status(200).json({ message: error.details[0].message, status:false });}
         const {title,description,project,category,status,priority,severity,members} = req.body;
         const creator=req.userId;
         const lastUpdatedBy= req.userId;
@@ -27,7 +27,7 @@ bugRouter.post("/",isAuthantecated, async(req,res)=>{
         // add bug screens{****************}
         await newBug.populate(["creator","lastUpdatedBy","category"]);
         return res.status(200).json({data: newBug, status:true });
-    }catch(error){return res.status(400).json({ message: error.message, status:false })} 
+    }catch(error){return res.status(500).json({ message: error.message, status:false })} 
 })
 
 //get user's bugs  
@@ -44,15 +44,15 @@ bugRouter.get("/", isAuthantecated, async (req,res)=>{
             }
             return res.status(200).json({ data: bugsList , status:true });
         }
-        else{return res.status(400).json({ message: "No Bugs Yet !!", status:false })}       
-    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+        else{return res.status(200).json({ message: "No Bugs Yet !!", status:false })}       
+    }catch(error){return res.status(500).json({ message: error.message, status:false })}
 }) 
 
 //update bug
 bugRouter.put("/:id", isAuthantecated,async (req,res)=>{
     try{
         const {error} = validateBugUpdating(req.body);
-        if(error) {return res.status(400).json({ message: error.details[0].message, status:false });}
+        if(error) {return res.status(200).json({ message: error.details[0].message, status:false });}
         let theBug =await BugModel.findOne({_id:req.params.id});
         let title = req.body.title ?? theBug.title;
         let description =req.body.description ?? theBug.description;
@@ -68,7 +68,7 @@ bugRouter.put("/:id", isAuthantecated,async (req,res)=>{
         let updatedBugData={title,description,status,priority,severity,category,project,creator,timeCreated,lastUpdatedBy,lastUpdatedAt};
         await BugModel.findOneAndUpdate({_id:req.params.id},updatedBugData)
         return res.status(200).json({ message:"Bug updated successfully.." , status:true });
-    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+    }catch(error){return res.status(500).json({ message: error.message, status:false })}
 })
 
 //delete bug
@@ -80,8 +80,8 @@ bugRouter.delete("/:id", async(req,res)=>{
             await BugModel.findByIdAndDelete(req.params.id);
             return res.status(200).json({ message: "Bug deleted successfully..", status:true })
         }
-        else{return res.status(400).json({ message: "Bug isn't found !!", status:false })}
-    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+        else{return res.status(200).json({ message: "Bug isn't found !!", status:false })}
+    }catch(error){return res.status(500).json({ message: error.message, status:false })}
 })
 
 //get bug details
@@ -104,8 +104,8 @@ bugRouter.get("/:id", async (req,res)=>{
             }
             return res.status(200).json({ data: {bug, membersList} , status:true });
         }
-        else{return res.status(400).json({ message: "Bug isn't found !!", status:false })}
-    }catch(error){return res.status(400).json({ message: error.message, status:false })}
+        else{return res.status(200).json({ message: "Bug isn't found !!", status:false })}
+    }catch(error){return res.status(500).json({ message: error.message, status:false })}
 })
 
 module.exports={bugRouter}

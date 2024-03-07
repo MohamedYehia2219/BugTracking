@@ -9,7 +9,7 @@ authRouter.post("/signup", async (req, res) => {
     const userData = req.body;
     const { error } = validateRegisterUser(userData);
     if (error)
-        return res.status(400).json({ message: error.details[0].message, status:false });
+        return res.status(200).json({ message: error.details[0].message, status:false });
     const hashedPassword = await bcrypt.hash(userData.password, 12);
     try {
         let newUser = new UserModel(userData);
@@ -19,7 +19,7 @@ authRouter.post("/signup", async (req, res) => {
         res.status(201).json({data:newUser, token:token, status:true});
     } catch (error) {
         console.log(error);
-        res.status(400).json({ message: error.message, status:false });
+        res.status(500).json({ message: error.message, status:false });
     }
 });
 
@@ -31,15 +31,15 @@ authRouter.post("/login",async(req,res)=>{
         if(userName){existedUser = await UserModel.findOne({userName})};
         //not registered
         if(!existedUser)
-            return res.status(400).json({massage:"Invalid email or userName, This user isnot registered!!", status:false})
+            return res.status(200).json({massage:"Invalid email or userName, This user isnot registered!!", status:false})
         let confirmationPassword = await bcrypt.compare(password,existedUser.password)
         if(!confirmationPassword)
-            return res.status(400).json({massage:"Invalid password!!", status:false})
+            return res.status(200).json({massage:"Invalid password!!", status:false})
         let token = jwt.sign({userId: existedUser._id}, JWT_SECRET_KEY)
         return res.status(200).json({ data:existedUser ,token:token, status:true})
     }catch(error){
         console.log(error);
-        res.status(400).json({ message: error.message, status:false });
+        res.status(500).json({ message: error.message, status:false });
     }
 })
 module.exports={authRouter}
