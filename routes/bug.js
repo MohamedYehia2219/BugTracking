@@ -6,7 +6,7 @@ const {BugMembersModel} = require("../models/bug_members");
 const {BugScreensModel} = require("../models/bug_screens");
 const {upload} = require("../configration/utils")
 
-//add Bug
+//post Bug
 bugRouter.post("/", upload.array("bugs"), isAuthantecated, async(req,res)=>{
     try{
         //add bug model
