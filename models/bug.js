@@ -74,6 +74,7 @@ function validateBugCreation(obj) {
     project: Joi.string().required(), // Assuming project is the project's ID
     category: Joi.string().required(), // Assuming category is the category's ID
     members:Joi.array().required(),
+    screens:Joi.array().required(),
   });
   return schema.validate(obj);
 }
