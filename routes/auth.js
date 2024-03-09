@@ -33,10 +33,10 @@ authRouter.post("/login",async(req,res)=>{
         if(userName){existedUser = await UserModel.findOne({userName})};
         //not registered
         if(!existedUser)
-            return res.status(200).json({massage:"Invalid email or userName, This user isnot registered!!", status:false})
+            return res.status(200).json({message:"Invalid email or userName, This user isnot registered!!", status:false})
         let confirmationPassword = await bcrypt.compare(password,existedUser.password)
         if(!confirmationPassword)
-            return res.status(200).json({massage:"Invalid password!!", status:false})
+            return res.status(200).json({message:"Invalid password!!", status:false})
         let token = jwt.sign({userId: existedUser._id}, JWT_SECRET_KEY)
         return res.status(200).json({ data:existedUser ,token:token, status:true})
     }catch(error){

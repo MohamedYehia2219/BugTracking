@@ -44,13 +44,17 @@ bugRouter.post("/", upload.array("bugs"), isAuthantecated, async(req,res)=>{
 bugRouter.get("/", isAuthantecated, async (req,res)=>{
     try{
         let bugs = await BugMembersModel.find({userId: req.userId}).populate("bugId");
+        console.log(bugs.length);
         if(bugs)
         {
             let bugsList = [];
             for(let i=0; i<bugs.length; i++)
             {
-                await bugs[i].bugId.populate(["creator","lastUpdatedBy","category"]);
-                bugsList.push(bugs[i].bugId);
+                if(bugs[i].bugId)
+                {
+                    await bugs[i].bugId.populate(["creator","lastUpdatedBy","category"]);
+                    bugsList.push(bugs[i].bugId);
+                } 
             }
             return res.status(200).json({ data: bugsList , status:true });
         }
