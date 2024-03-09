@@ -43,7 +43,7 @@ bugRouter.post("/", upload.array("bugs"), isAuthantecated, async(req,res)=>{
 bugRouter.get("/", isAuthantecated, async (req,res)=>{
     try{
         let bugs = await BugMembersModel.find({userId: req.userId}).populate("bugId");
-        console.log(bugs.length);
+        //console.log(bugs.length);
         if(bugs)
         {
             let bugsList = [];
