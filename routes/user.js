@@ -53,6 +53,8 @@ userRouter.post("/", isAuthantecated, async(req,res)=>{
         if(email){member = await UserModel.findOne({email});}
         if(!member){return res.status(200).json({ message: "User is not found !!", status:false })}
         if(member._id == req.userId){return res.status(200).json({ message: "Something wrong !!", status:false })}
+        let existedMember = await UserMembersModel.findOne({userId: req.userId, memberId: member._id})
+        if(existedMember){return res.status(200).json({ message: "User is already added.. !!", status:false })}
         let data = {userId: req.userId, memberId: member._id};
         let row = new UserMembersModel(data);
         await row.save();
